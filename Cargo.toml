@@ -1,0 +1,10 @@
+[package]
+name = "type-for-me"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = "1.47.1"
+gtk4 = "0.9.7"
+libadwaita = "0.7.2"
+ashpd = "0.11.0"
