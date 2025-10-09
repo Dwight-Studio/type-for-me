@@ -46,6 +46,12 @@
         <kudo>HiDpiIcon</kudo>
     </kudos>
     <screenshots>
+        <screenshot type="default">
+            <image>
+                https://raw.githubusercontent.com/Dwight-Studio/type-for-me/refs/heads/main/docs/main.png
+            </image>
+            <caption>Settings window</caption>
+        </screenshot>
     </screenshots>
     <releases>
         <release date="2024-10-09" version="1.0.0">
