@@ -107,11 +107,13 @@ impl AsyncComponent for App {
                 add_top_bar = &adw::HeaderBar {
                     set_show_title: true,
 
+                    /*
                     pack_end = &gtk::Button {
                         set_icon_name: rsc::MENU_LARGE,
 
                         //connect_clicked => AppMsg::Test,
                     }
+                    */
                 },
 
                 #[name = "toast"]
