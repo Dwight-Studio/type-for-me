@@ -1,6 +1,12 @@
-# Building
+# Type for Me!
 
-## Dependencies
+`Type for Me` is a simple utility to type the content of your clipboard (instead of pasting it). It allows you to use
+your clipboard anywhere, even in virtual machines. It uses the built-in `Remote Desktop` features of modern Wayland
+compositor.
+
+## Building
+
+### Dependencies
 
 *Type For Me* requires `libadwaita` (and all its dependencies, such as `gtk4`) and `libxkbcommon`.
 
