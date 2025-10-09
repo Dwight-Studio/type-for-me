@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Type for Me
+Comment=The clipboard auto-typer
+Exec=/app/bin/type-for-me
+Terminal=false
+Icon=fr.dwightstudio.TypeForMe
+Type=Application
+Categories=Utility;
+Keywords=type;for;me;dwightstudio;clipboard;
+StartupWMClass=fr.dwightstudio.TypeForMe

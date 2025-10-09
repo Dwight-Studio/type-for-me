@@ -1,0 +1,45 @@
+{
+  "app-id": "fr.dwightstudio.TypeForMe",
+  "runtime": "org.gnome.Platform",
+  "runtime-version": "48",
+  "sdk": "org.gnome.Sdk",
+  "sdk-extensions": [
+    "org.freedesktop.Sdk.Extension.rust-stable"
+  ],
+  "command": "type-for-me",
+  "finish-args": [
+    "--share=ipc",
+    "--socket=wayland",
+    "--unset-env=LD_PRELOAD",
+    "--unset-env=GTK_THEME"
+  ],
+  "build-options": {
+    "append-path": "/usr/lib/sdk/rust-stable/bin"
+  },
+  "modules": [
+    {
+      "name": "type-for-me",
+      "buildsystem": "simple",
+      "build-options": {
+        "env": {
+          "CARGO_HOME": "/run/build/type-for-me/cargo"
+        }
+      },
+      "build-commands": [
+        "cargo --offline fetch --manifest-path Cargo.toml --verbose",
+        "cargo --offline build --release --verbose",
+        "install -Dm 755 /target/release/type-for-me -t /app/bin/",
+        "install -Dm 644 rsc/fr.dwightstudio.TypeForMe.svg /app/share/icons/hicolor/scalable/apps/fr.dwightstudio.TypeForMe.svg",
+        "install -Dm 644 rsc/fr.dwightstudio.TypeForMe-symbolic.svg /app/share/icons/hicolor/symbolic/apps/fr.dwightstudio.TypeForMe-symbolic.svg",
+        "desktop-file-install --dir=/app/share/applications rsc/fr.dwightstudio.TypeForMe.desktop"
+      ],
+      "sources": [
+        {
+          "type": "dir",
+          "path": "."
+        },
+        "./generated-sources.json"
+      ]
+    }
+  ]
+}
