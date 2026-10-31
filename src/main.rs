@@ -22,6 +22,7 @@
  */
 mod app;
 mod config;
+mod i18n;
 mod util;
 
 use crate::app::{App, Init};
@@ -30,21 +31,20 @@ use fern::colors::ColoredLevelConfig;
 use relm4::adw::gio::{Resource, resources_register};
 use relm4::adw::glib;
 use relm4::{RelmApp, gtk};
-use std::env::Args;
 use std::time::SystemTime;
-use tr::tr_init;
 
 mod rsc {
     include!(concat!(env!("OUT_DIR"), "/resources.rs"));
+    include!(concat!(env!("OUT_DIR"), "/translations.rs"));
 }
-const APP_ID: &str = "fr.dwightstudio.TypeForMe";
+pub(crate) const APP_ID: &str = "fr.dwightstudio.TypeForMe";
 
 fn main() {
     // Initialize logger
     setup_logger().unwrap();
 
-    // Initialize tr
-    tr_init!("/usr/share/locale");
+    // Load the translation, before any string is translated
+    i18n::init();
 
     // Load the resources
     let bytes = glib::Bytes::from_static(rsc::GRESOURCE_BYTES);
@@ -59,7 +59,7 @@ fn main() {
     gtk::IconTheme::for_display(&display).add_resource_path(rsc::RESOURCE_PREFIX);
 
     let config = Config::load();
-    let silent = std::env::args().any(|arg| arg.contains("--silent"));
+    let silent = std::env::args().any(|arg| arg == "--silent");
 
     let app = RelmApp::new(APP_ID);
     app.run_async::<App>(Init { silent, config });
@@ -76,7 +76,11 @@ fn setup_logger() -> Result<(), fern::InitError> {
                 message
             ))
         })
-        .level(log::LevelFilter::Debug)
+        .level(if cfg!(debug_assertions) {
+            log::LevelFilter::Debug
+        } else {
+            log::LevelFilter::Info
+        })
         .chain(std::io::stdout())
         .apply()?;
     Ok(())

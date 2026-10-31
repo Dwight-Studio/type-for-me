@@ -1,0 +1,281 @@
+# French translation of Type for Me.
+# Copyright (C) 2025 Dwight Studio
+# This file is distributed under the same license as the type-for-me package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Type for Me\n"
+"Report-Msgid-Bugs-To: https://github.com/Dwight-Studio/type-for-me/issues\n"
+"POT-Creation-Date: 2026-10-31 16:21+0100\n"
+"PO-Revision-Date: 2026-10-31 01:08+0100\n"
+"Last-Translator: Alexandre Leconte\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: rsc/fr.dwightstudio.TypeForMe.desktop:2
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:4
+msgid "Type for Me"
+msgstr "Type for Me"
+
+#: rsc/fr.dwightstudio.TypeForMe.desktop:3
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:5
+msgid "Type your clipboard instead of pasting it"
+msgstr "Tapez votre presse-papier au lieu de le coller"
+
+#: rsc/fr.dwightstudio.TypeForMe.desktop:9
+msgid "clipboard;type;autotype;keyboard;paste;"
+msgstr ""
+"presse-"
+"papier;taper;saisie;clavier;coller;clipboard;type;autotype;keyboard;paste;"
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:25
+msgid ""
+"Type for Me is a simple utility that types the content of your clipboard "
+"instead of pasting it. It allows you to use your clipboard anywhere, even in "
+"virtual machines or remote sessions that do not support pasting."
+msgstr ""
+"Type for Me est un utilitaire simple qui tape le contenu de votre presse-"
+"papier au lieu de le coller. Il vous permet d’utiliser votre presse-papier "
+"partout, même dans des machines virtuelles ou des sessions à distance qui ne "
+"prennent pas en charge le collage."
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:27
+msgid ""
+"It relies on the Remote Desktop and Global Shortcuts portals of modern "
+"Wayland desktops: press the shortcut and the clipboard is typed into the "
+"focused window."
+msgstr ""
+"Il s’appuie sur les portails Bureau à distance et Raccourcis globaux des "
+"bureaux Wayland modernes : appuyez sur le raccourci et le presse-papier est "
+"tapé dans la fenêtre active."
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:34
+msgid "clipboard"
+msgstr "presse-papier"
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:35
+msgid "type"
+msgstr "taper"
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:36
+msgid "autotype"
+msgstr "saisie automatique"
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:37
+msgid "keyboard"
+msgstr "clavier"
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:38
+msgid "paste"
+msgstr "coller"
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:47
+msgid "Settings window"
+msgstr "Fenêtre des réglages"
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:54
+msgid "First stable release of Type for Me."
+msgstr "Première version stable de Type for Me."
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:56
+msgid "Type the clipboard with a global shortcut"
+msgstr "Tapez le presse-papier avec un raccourci global"
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:57
+msgid "Configurable typing delay and period"
+msgstr "Délais de frappe configurables"
+
+#: rsc/fr.dwightstudio.TypeForMe.metainfo.xml:58
+msgid "Remote desktop permission is remembered between sessions"
+msgstr "L’autorisation de bureau à distance est conservée entre les sessions"
+
+#: src/app.rs:133
+msgid "Typing…"
+msgstr "Frappe en cours…"
+
+#: src/app.rs:143
+msgid "Main Menu"
+msgstr "Menu principal"
+
+#: src/app.rs:148 src/app.rs:226 src/app.rs:320 src/app.rs:345
+msgid "Allow"
+msgstr "Autoriser"
+
+#: src/app.rs:154
+msgid "Keyboard access is required to type the clipboard"
+msgstr "L’accès au clavier est nécessaire pour taper le presse-papier"
+
+#: src/app.rs:156 src/app.rs:209
+msgid "The shortcut is not registered"
+msgstr "Le raccourci n’est pas enregistré"
+
+#: src/app.rs:158
+msgid "Background activity is required for the shortcut to work"
+msgstr ""
+"L’activité en arrière-plan est nécessaire au fonctionnement du raccourci"
+
+#: src/app.rs:188
+msgid ""
+"Types your clipboard instead of pasting it, even where pasting is not "
+"possible, such as virtual machines."
+msgstr ""
+"Tape votre presse-papier au lieu de le coller, même là où le collage est "
+"impossible, comme dans les machines virtuelles."
+
+#: src/app.rs:197
+msgid "Shortcut"
+msgstr "Raccourci"
+
+#: src/app.rs:200
+msgid "Type the clipboard"
+msgstr "Taper le presse-papier"
+
+#: src/app.rs:207
+msgid "No shortcut assigned"
+msgstr "Aucun raccourci attribué"
+
+#: src/app.rs:215
+msgid "Not registered"
+msgstr "Non enregistré"
+
+#: src/app.rs:226
+msgid "Change…"
+msgstr "Modifier…"
+
+#: src/app.rs:237
+msgid "Try It"
+msgstr "Essayer"
+
+#: src/app.rs:238
+msgid ""
+"Copy some text, then press the button: it will be typed in the field below."
+msgstr ""
+"Copiez du texte, puis appuyez sur le bouton : il sera tapé dans le champ ci-"
+"dessous."
+
+#: src/app.rs:242
+msgid "Test area"
+msgstr "Zone de test"
+
+#: src/app.rs:246
+msgid "Type the clipboard here"
+msgstr "Taper le presse-papier ici"
+
+#: src/app.rs:259
+msgid "Typing"
+msgstr "Frappe"
+
+#: src/app.rs:262
+msgid "Delay before typing"
+msgstr "Délai avant la frappe"
+
+#: src/app.rs:263
+msgid ""
+"Time to release the shortcut and focus the target window, in milliseconds."
+msgstr ""
+"Temps pour relâcher le raccourci et activer la fenêtre cible, en "
+"millisecondes."
+
+#: src/app.rs:276
+msgid "Delay between keys"
+msgstr "Délai entre les touches"
+
+#: src/app.rs:277
+msgid "Increase it if some characters are lost, in milliseconds."
+msgstr "À augmenter si des caractères sont perdus, en millisecondes."
+
+#: src/app.rs:290
+msgid "Replace line breaks with spaces"
+msgstr "Remplacer les retours à la ligne par des espaces"
+
+#: src/app.rs:291
+msgid ""
+"Type a space instead of pressing Enter, so that pasting several lines does "
+"not validate a form or run a command."
+msgstr "Taper une espace au lieu d’appuyer sur Entrée, pour que coller plusieurs lignes ne valide pas un formulaire ou n’exécute pas une commande."
+
+#: src/app.rs:304
+msgid "Permissions"
+msgstr "Autorisations"
+
+#: src/app.rs:307
+msgid "Keyboard access"
+msgstr "Accès au clavier"
+
+#: src/app.rs:308
+msgid "Send key strokes through the remote desktop portal."
+msgstr "Envoyer des frappes au clavier via le portail de bureau à distance."
+
+#: src/app.rs:312 src/app.rs:337
+msgid "Allowed"
+msgstr "Autorisé"
+
+#: src/app.rs:332
+msgid "Background activity"
+msgstr "Activité en arrière-plan"
+
+#: src/app.rs:333
+msgid "Keep running when the window is closed, so the shortcut always works."
+msgstr ""
+"Continuer à fonctionner quand la fenêtre est fermée, pour que le raccourci "
+"marche toujours."
+
+#: src/app.rs:409
+msgid "Launch at Login"
+msgstr "Lancer à l’ouverture de session"
+
+#: src/app.rs:415
+msgid "About Type for Me"
+msgstr "À propos de Type for Me"
+
+#: src/app.rs:418 src/i18n.rs:79
+msgid "Quit"
+msgstr "Quitter"
+
+#: src/app.rs:457
+msgid "Loading…"
+msgstr "Chargement…"
+
+#: src/app.rs:482
+msgid "The shortcut could not be registered"
+msgstr "Le raccourci n’a pas pu être enregistré"
+
+#: src/app.rs:494
+msgid "Change the shortcut in the keyboard settings of your desktop"
+msgstr "Modifiez le raccourci dans les réglages clavier de votre bureau"
+
+#: src/app.rs:509
+msgid "Keyboard access was not granted"
+msgstr "L’accès au clavier n’a pas été accordé"
+
+#: src/app.rs:521
+msgid "Background activity was not granted"
+msgstr "L’activité en arrière-plan n’a pas été accordée"
+
+#: src/app.rs:604
+msgid "Typing failed: keyboard access was lost"
+msgstr "Échec de la frappe : l’accès au clavier a été perdu"
+
+#: src/app.rs:671
+msgid "The clipboard does not contain text"
+msgstr "Le presse-papier ne contient pas de texte"
+
+#: src/app.rs:691
+msgid "Type clipboard"
+msgstr "Taper le presse-papier"
+
+#: src/app.rs:810
+msgid "Type the clipboard when prompted."
+msgstr "Taper le presse-papier sur demande."
+
+#: src/app.rs:824
+msgid "Launch at login was not allowed"
+msgstr "Le lancement à l’ouverture de session n’a pas été autorisé"
+
+#: src/app.rs:833
+msgid "Waiting for shortcut to type clipboard."
+msgstr "En attente du raccourci pour taper le presse-papier."

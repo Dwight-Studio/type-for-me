@@ -32,17 +32,26 @@ macro_rules! logged_send {
 #[macro_export]
 macro_rules! handle_invalidation {
     ( $sender:expr, $session:ident, $msg:expr ) => {
-        let mut stream = $session.receive_closed().await?;
+        // The closed stream borrows the session: keep a reference to it in the task
+        let session = std::sync::Arc::clone(&$session);
         $sender.command(move |sender, shutdown| {
             shutdown
                 .register(async move {
+                    let mut stream = match session.receive_closed().await {
+                        Ok(stream) => stream,
+                        Err(error) => {
+                            error!("Error listening to session closing: {error}");
+                            return;
+                        }
+                    };
+
                     match stream.next().await {
-                        Some(()) => {
-                            debug!("Received shutdown signal?");
+                        Some(_) => {
+                            debug!("Session closed by the portal");
                             logged_send!(sender, $msg);
                         }
                         None => {
-                            debug!("Received shutdown signal?");
+                            debug!("Session closed stream ended");
                         }
                     }
                 })

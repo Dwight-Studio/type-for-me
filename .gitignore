@@ -1,2 +1,9 @@
 /target
 .idea
+
+# Flatpak build (see README)
+/rsc/cargo-sources.json
+/.flatpak-builder
+/flatpak-build
+/flatpak-repo
+*.flatpak

@@ -1,0 +1,146 @@
+# Builds the Flatpak bundle of a release tag and attaches it to the GitHub release,
+# which is created if needed with the notes of the metainfo.
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: Release tag (vX.Y.Z)
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (vX.Y.Z)
+        required: true
+        type: string
+  push:
+    tags: ["v*"]
+
+env:
+  TAG: ${{ inputs.tag || github.ref_name }}
+  MANIFEST: rsc/fr.dwightstudio.TypeForMe.json
+  METAINFO: rsc/fr.dwightstudio.TypeForMe.metainfo.xml
+  # Pinned revision of flatpak-builder-tools
+  BUILDER_TOOLS_REF: ea92dc22ab7e4ab44133407b883c9a6792e54302
+
+jobs:
+  # Generates what the Flatpak build needs and the release notes
+  sources:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+          path: app
+
+      - name: Check version
+        id: version
+        working-directory: app
+        run: |
+          version=$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["version"])')
+          if [ "v$version" != "$TAG" ]; then
+            echo "::error::Cargo.toml version ($version) does not match tag $TAG"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Write release notes
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          {
+            python3 app/.github/scripts/release_notes.py "app/$METAINFO" "$VERSION"
+            echo
+            echo "## Installation"
+            echo
+            echo "Download \`type-for-me-$VERSION-x86_64.flatpak\`, then run:"
+            echo
+            echo '```sh'
+            echo "flatpak install --user type-for-me-$VERSION-x86_64.flatpak"
+            echo '```'
+          } > notes.md
+
+      - uses: actions/checkout@v4
+        with:
+          repository: flatpak/flatpak-builder-tools
+          ref: ${{ env.BUILDER_TOOLS_REF }}
+          path: tools
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Generate cargo sources
+        run: |
+          pip install aiohttp tomlkit
+          python3 tools/cargo/flatpak-cargo-generator.py app/Cargo.lock -o cargo-sources.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cargo-sources
+          path: cargo-sources.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: notes.md
+
+  flatpak:
+    needs: sources
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-51
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+
+      # Next to the manifest, which references it
+      - uses: actions/download-artifact@v4
+        with:
+          name: cargo-sources
+          path: rsc
+
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          manifest-path: ${{ env.MANIFEST }}
+          bundle: type-for-me-${{ needs.sources.outputs.version }}-x86_64.flatpak
+          artifact-name: flatpak-bundle
+          cache-key: flatpak-builder-${{ hashFiles('Cargo.lock') }}
+          # The manifest copies the repository: keep the build outputs in skipped directories
+          build-dir: flatpak-build
+          repo-dir: flatpak-repo
+
+  release:
+    needs: [sources, flatpak]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-notes
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: flatpak-bundle
+          path: bundle
+
+      - name: Publish the bundle in the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if ! gh release view "$TAG" > /dev/null 2>&1; then
+            gh release create "$TAG" --title "$TAG" --notes-file notes.md --verify-tag
+          fi
+          gh release upload "$TAG" bundle/*.flatpak --clobber

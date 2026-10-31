@@ -28,22 +28,27 @@ use std::path::PathBuf;
 use std::sync::LazyLock;
 use std::time::Duration;
 
+const DIRNAME: &str = "type-for-me";
 const FILENAME: &str = "config.toml";
-const FALLBACK_PATH: &str = "~/.config/type-for-me.toml";
 
-const CONFIG_PATH: LazyLock<PathBuf> = LazyLock::new(|| {
-    if let Some(folder_path) = std::env::var_os("XDG_CONFIG_HOME") {
-        PathBuf::from(folder_path).join(FILENAME)
-    } else {
-        PathBuf::from(FALLBACK_PATH)
-    }
+static CONFIG_PATH: LazyLock<PathBuf> = LazyLock::new(|| {
+    let base = std::env::var_os("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .filter(|path| path.is_absolute())
+        .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".config")))
+        .unwrap_or_else(|| PathBuf::from("."));
+
+    base.join(DIRNAME).join(FILENAME)
 });
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(default)]
 pub struct Config {
     pub(crate) rd_token: Option<String>,
     pub(crate) typing_period: Duration,
     pub(crate) typing_delay: Duration,
+    pub(crate) autostart: bool,
+    pub(crate) newlines_as_spaces: bool,
 }
 
 impl Config {
@@ -51,6 +56,12 @@ impl Config {
         let path = &*CONFIG_PATH;
 
         info!("Saving config to {}", path.display());
+
+        if let Some(parent) = path.parent()
+            && let Err(error) = std::fs::create_dir_all(parent)
+        {
+            warn!("Failed to create config directory: {}", error);
+        }
 
         match toml::to_string(self) {
             Ok(contents) => match File::create(path) {
@@ -114,6 +125,8 @@ impl Default for Config {
             rd_token: None,
             typing_period: Duration::from_millis(10),
             typing_delay: Duration::from_millis(250),
+            autostart: true,
+            newlines_as_spaces: false,
         }
     }
 }

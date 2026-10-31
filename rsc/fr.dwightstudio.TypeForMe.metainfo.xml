@@ -2,18 +2,18 @@
 <component type="desktop-application">
     <id>fr.dwightstudio.TypeForMe</id>
     <name>Type for Me</name>
-    <summary>Simple clipboard typer for Wayland, written in Rust</summary>
+    <summary>Type your clipboard instead of pasting it</summary>
     <developer id="fr.dwightstudio">
-        <name>Dwight Studio</name>
+        <name translate="no">Dwight Studio</name>
     </developer>
     <launchable type="desktop-id">fr.dwightstudio.TypeForMe.desktop</launchable>
-    <project_license>GPL-3.0</project_license>
+    <project_license>GPL-3.0-or-later</project_license>
     <metadata_license>CC0-1.0</metadata_license>
     <content_rating type="oars-1.1"/>
     <url type="homepage">https://dwightstudio.fr/TypeForMe</url>
     <url type="bugtracker">https://github.com/Dwight-Studio/type-for-me/issues</url>
     <url type="vcs-browser">https://github.com/Dwight-Studio/type-for-me</url>
-    <url type="help">http://discord.dwightstudio.fr</url>
+    <url type="help">https://discord.dwightstudio.fr</url>
     <recommends>
         <control>keyboard</control>
         <control>pointing</control>
@@ -22,45 +22,43 @@
         <display_length compare="ge">360</display_length>
     </requires>
     <description>
-        <p>`Type for Me` is a simple utility to type the content of your clipboard (instead of pasting it). It allows
-            you to use
-            your clipboard anywhere, even in virtual machines. It uses the built-in `Remote Desktop` features of modern
-            Wayland
-            compositor.
+        <p>Type for Me is a simple utility that types the content of your clipboard instead of pasting it. It allows
+            you to use your clipboard anywhere, even in virtual machines or remote sessions that do not support pasting.
+        </p>
+        <p>It relies on the Remote Desktop and Global Shortcuts portals of modern Wayland desktops: press the shortcut
+            and the clipboard is typed into the focused window.
         </p>
     </description>
     <categories>
-        <category>Development</category>
         <category>Utility</category>
     </categories>
     <keywords>
-        <keyword>gtk4</keyword>
-        <keyword>rust</keyword>
         <keyword>clipboard</keyword>
         <keyword>type</keyword>
-        <keyword>for</keyword>
-        <keyword>me</keyword>
-        <keyword>wayland</keyword>
+        <keyword>autotype</keyword>
+        <keyword>keyboard</keyword>
+        <keyword>paste</keyword>
     </keywords>
-    <kudos>
-        <kudo>HiDpiIcon</kudo>
-    </kudos>
+    <branding>
+        <color type="primary" scheme_preference="light">#f6d32d</color>
+        <color type="primary" scheme_preference="dark">#865e3c</color>
+    </branding>
     <screenshots>
         <screenshot type="default">
-            <image>
-                https://raw.githubusercontent.com/Dwight-Studio/type-for-me/refs/heads/main/docs/main.png
-            </image>
+            <image>https://raw.githubusercontent.com/Dwight-Studio/type-for-me/refs/heads/main/docs/main.png</image>
             <caption>Settings window</caption>
         </screenshot>
     </screenshots>
     <releases>
-        <release date="2024-10-09" version="1.0.0">
+        <release version="1.0.0" date="2026-10-31">
             <url type="details">https://github.com/Dwight-Studio/type-for-me/releases/tag/v1.0.0</url>
             <description>
-                <p>Stable release of Type for Me</p>
-                <p>Changelog:</p>
+                <p>First stable release of Type for Me.</p>
                 <ul>
-                    <li>Initial release!</li>
+                    <li>Type the clipboard with a global shortcut</li>
+                    <li>Configurable typing delay and period</li>
+                    <li>Remote desktop permission is remembered between sessions</li>
+                    <li>Line breaks can be replaced by spaces</li>
                 </ul>
             </description>
         </release>

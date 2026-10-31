@@ -27,22 +27,40 @@ use std::fs::File;
 use std::io::BufWriter;
 use std::io::Write;
 use std::path::Path;
+use std::process::Command;
 use std::{env, fs};
 
-// Build script for Syncify
+// Build script for Type for Me
 // The ressource handling has been largely inspired
 // by relm4-icons-build (https://github.com/Relm4/icons)
 
 /// GRessource prefix.
-pub const PREFIX: &str = "/fr/dwightstudio/syncify";
+pub const PREFIX: &str = "/fr/dwightstudio/TypeForMe";
+
+/// Application ID, used to name the icon and metainfo files.
+pub const APP_ID: &str = "fr.dwightstudio.TypeForMe";
 
 /// Ressource directory.
 pub const RESOURCES_DIR_NAME: &str = "rsc";
 
 /// Unique identifier added to the icon names.
-pub const UNIQUE_IDENTIFIER: &str = "syncify";
+pub const UNIQUE_IDENTIFIER: &str = "typeforme";
+
+/// Translations directory.
+pub const PO_DIR_NAME: &str = "po";
 
 fn main() {
+    // Translations, also needed by the resources (translated metainfo)
+    let mut source_file = BufWriter::new(
+        File::create(
+            Path::new(&env::var("OUT_DIR").expect("Missing OUT_DIR env var"))
+                .join("translations.rs"),
+        )
+        .expect("Failed to create translations source file"),
+    );
+    compile_translations(&mut source_file);
+    source_file.flush().expect("Failed to flush source file");
+
     // Resources
     bundle_resources()
 }
@@ -66,6 +84,38 @@ fn bundle_resources() {
     // Add all icons
     generate_icons(rsc_dir, &mut resource_data, &mut source_file);
 
+    // Add the application icon, so it is available even when the app is not installed
+    resource_data.push(
+        FileData::from_file(
+            format!("{PREFIX}/scalable/apps/{APP_ID}.svg"),
+            &rsc_dir.join(format!("{APP_ID}.svg")),
+            true,
+            &PreprocessOptions::xml_stripblanks(),
+        )
+        .expect("Failed to create app icon file data"),
+    );
+
+    // Add the translated metainfo, used by the about dialog
+    let metainfo = out_dir.join(format!("{APP_ID}.metainfo.xml"));
+    msgfmt(&[
+        "--xml".as_ref(),
+        "--template".as_ref(),
+        rsc_dir.join(format!("{APP_ID}.metainfo.xml")).as_os_str(),
+        "-d".as_ref(),
+        PO_DIR_NAME.as_ref(),
+        "-o".as_ref(),
+        metainfo.as_os_str(),
+    ]);
+    resource_data.push(
+        FileData::from_file(
+            format!("{PREFIX}/metainfo.xml"),
+            &metainfo,
+            true,
+            &PreprocessOptions::empty(),
+        )
+        .expect("Failed to create metainfo file data"),
+    );
+
     // Generate resource bundle
     let data = BundleBuilder::from_file_data(resource_data)
         .build()
@@ -80,11 +130,68 @@ fn bundle_resources() {
         "/// GResource file contents\n\
         pub const GRESOURCE_BYTES: &[u8] = include_bytes!(\"resources.gresource\");\n\
         /// Resource prefix used in generated `.gresource` file\n\
-        pub const RESOURCE_PREFIX: &str = \"{PREFIX}\";"
+        pub const RESOURCE_PREFIX: &str = \"{PREFIX}\";\n\
+        /// Resource path of the AppStream metainfo\n\
+        pub const METAINFO: &str = \"{PREFIX}/metainfo.xml\";"
     )
     .expect("Failed to write");
 
     source_file.flush().expect("Failed to flush source file");
+}
+
+/// Compiles the translations listed in `po/LINGUAS` and embeds them in the binary
+fn compile_translations(source_file: &mut BufWriter<File>) {
+    let out_dir = env::var("OUT_DIR").expect("Missing OUT_DIR env var");
+    let locale_dir = Path::new(&out_dir).join("locale");
+    fs::create_dir_all(&locale_dir).expect("Failed to create locale directory");
+
+    println!("cargo:rerun-if-changed={PO_DIR_NAME}");
+
+    let linguas = fs::read_to_string(Path::new(PO_DIR_NAME).join("LINGUAS"))
+        .expect("Failed to read po/LINGUAS");
+    let languages: Vec<&str> = linguas
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
+        .collect();
+
+    writeln!(
+        source_file,
+        "/// Compiled translations (language code, `.mo` file contents)\n\
+        pub const TRANSLATIONS: &[(&str, &[u8])] = &["
+    )
+    .expect("Failed to write");
+
+    for lang in languages {
+        let mo_file = locale_dir.join(format!("{lang}.mo"));
+        msgfmt(&[
+            "--check".as_ref(),
+            "-o".as_ref(),
+            mo_file.as_os_str(),
+            Path::new(PO_DIR_NAME)
+                .join(format!("{lang}.po"))
+                .as_os_str(),
+        ]);
+        writeln!(
+            source_file,
+            "    (\"{lang}\", include_bytes!(\"locale/{lang}.mo\")),"
+        )
+        .expect("Failed to write");
+    }
+
+    writeln!(source_file, "];").expect("Failed to write");
+}
+
+/// Runs `msgfmt` from GNU gettext
+fn msgfmt(args: &[&OsStr]) {
+    let status = Command::new("msgfmt")
+        .args(args)
+        .status()
+        .expect("Failed to run msgfmt: GNU gettext is required to build the translations");
+
+    if !status.success() {
+        panic!("msgfmt failed ({status}) with arguments {args:?}");
+    }
 }
 
 fn generate_icons(
